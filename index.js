@@ -1,34 +1,42 @@
 const path = require('path');
 const express = require('express');
-const multer = require('multer');
-const crypto = require('crypto');
-
-const storage = multer.diskStorage({
-    destination: './uploads/',
-    filename: function (req, file, cb) {
-      crypto.pseudoRandomBytes(16, function (err, raw) {
-        if (err) return cb(err)
-  
-        cb(null, raw.toString('hex') + path.extname(file.originalname))
-      })
-    }
-});
-
-const upload = multer({storage: storage});
+const busboy = require('connect-busboy');
+const fs = require('fs-extra');
 
 const app = express();
+app.use(busboy({
+    highWaterMark: 2 * 1024 * 1024
+}));
 
-app.post('/uploadfile', upload.single('file'), (req, res, next) => {
-    res.send('<h2>File uploaded</h2>');
-})
+const UPLOAD_DIRECTORY_PATH = path.join(__dirname, 'uploads');
+fs.ensureDir(UPLOAD_DIRECTORY_PATH);
 
 app.get('/', (req, res) => {
-    res.send(`<form action="/uploadfile" method="post" enctype="multipart/form-data">
+    res.send(`<form action="/upload" method="post" enctype="multipart/form-data">
     <input type="file" name="file" />
     <input type="submit" value="send" />
     </form>`);
 })
 
+
+app.post('/upload', (req, res) => {
+    req.pipe(req.busboy);
+
+    req.busboy.on('file', (fieldname, file, filename) => {
+        console.log(`Started upload of: ${filename}`);
+
+        const fstream = fs.createWriteStream(path.join(UPLOAD_DIRECTORY_PATH, filename));
+        file.pipe(fstream);
+
+        fstream.on('close', () => {
+            console.log(`Finished upload of ${filename}`);
+            res.send('File uploaded!');
+        });
+    });
+});
+
 app.listen(8080, () => {
     console.log('Listening on port 8080!');
 })
+
+app.use('/public', express.static('public'));
