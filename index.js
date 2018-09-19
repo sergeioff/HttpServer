@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const busboy = require('connect-busboy');
 const fs = require('fs-extra');
+const serveIndex = require('serve-index');
 
 const app = express();
 app.use(busboy({
@@ -10,6 +11,9 @@ app.use(busboy({
 
 const UPLOAD_DIRECTORY_PATH = path.join(__dirname, 'uploads');
 fs.ensureDir(UPLOAD_DIRECTORY_PATH);
+
+const PUBLIC_DIRECTORY = 'public';
+fs.ensureDir(path.join(__dirname, PUBLIC_DIRECTORY));
 
 app.get('/', (req, res) => {
     res.send(`<form action="/upload" method="post" enctype="multipart/form-data">
@@ -33,10 +37,14 @@ app.post('/upload', (req, res) => {
             res.send('File uploaded!');
         });
     });
+
+    req.busboy.on('close', () => {
+        console.log('closed');
+    })
 });
 
 app.listen(8080, () => {
     console.log('Listening on port 8080!');
 })
 
-app.use('/public', express.static('public'));
+app.use('/public', express.static(PUBLIC_DIRECTORY), serveIndex(PUBLIC_DIRECTORY));
