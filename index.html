@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>File upload</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        function upload() {
+            var file = document.getElementById('fileRoUpload').files[0];
+            var xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener('progress', function(progress) {
+                document.getElementById('progress').innerHTML = (progress.loaded / (progress.total / 100)).toFixed(2) + '%';
+            }, false);
+
+            var formData = new FormData();
+            formData.append('file', file);
+            xhr.open('POST', 'upload');
+            xhr.send(formData);
+        }
+    </script>
+</head>
+<body>
+    <form name="myform">
+        <input type="file" id="fileRoUpload" name="file"/>
+        <input type="button" value="submit" onclick="upload()">
+    </form>
+
+    <p id='progress'></p>
+</body>
+</html>

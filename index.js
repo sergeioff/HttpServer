@@ -16,10 +16,7 @@ const PUBLIC_DIRECTORY = 'public';
 fs.ensureDir(path.join(__dirname, PUBLIC_DIRECTORY));
 
 app.get('/', (req, res) => {
-    res.send(`<form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" />
-    <input type="submit" value="send" />
-    </form>`);
+    res.sendFile('index.html', {root: __dirname});
 })
 
 
