@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
         function upload() {
-            var file = document.getElementById('fileRoUpload').files[0];
+            var file = document.getElementById('fileToUpload').files[0];
             var xhr = new XMLHttpRequest();
             xhr.upload.addEventListener('progress', function(progress) {
                 document.getElementById('progress').innerHTML = (progress.loaded / (progress.total / 100)).toFixed(2) + '%';
@@ -22,8 +22,8 @@
 </head>
 <body>
     <form name="myform">
-        <input type="file" id="fileRoUpload" name="file"/>
-        <input type="button" value="submit" onclick="upload()">
+        <input type="file" id="fileToUpload" name="file"/>
+        <input type="button" value="Upload" onclick="upload()">
     </form>
 
     <p id='progress'></p>
