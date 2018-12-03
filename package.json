@@ -3,10 +3,28 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "build": "webpack --mode development",
+    "buildProd": "webpack --mode production"
+  },
   "dependencies": {
     "connect-busboy": "^0.0.2",
     "express": "^4.16.3",
     "fs-extra": "^7.0.0",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
     "serve-index": "^1.9.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.4",
+    "css-loader": "^1.0.1",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.26.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
   }
 }

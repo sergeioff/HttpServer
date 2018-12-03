@@ -15,9 +15,17 @@ fs.ensureDir(UPLOAD_DIRECTORY_PATH);
 const PUBLIC_DIRECTORY = 'public';
 fs.ensureDir(path.join(__dirname, PUBLIC_DIRECTORY));
 
+// app.use('/', express.static(__dirname));
+
 app.get('/', (req, res) => {
     res.sendFile('index.html', {root: __dirname});
 })
+
+app.get('/dist/bundle.js', (req, res) => {
+    res.sendFile('dist/bundle.js', {root: __dirname});
+})
+
+app.use(express.static("dist"));
 
 
 app.post('/upload', (req, res) => {
