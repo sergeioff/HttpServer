@@ -8,8 +8,8 @@ class FileUploadForm extends Component {
 
         this.state = {filesToUpload: []};
         
-        this.upload = this.upload.bind(this);
         this.onFilesChange = this.onFilesChange.bind(this);
+        this.click = this.click.bind(this);
     }
 
     onFilesChange() {
@@ -17,44 +17,31 @@ class FileUploadForm extends Component {
 
         const filesToUpload = [];
         for (let i = 0; i < files.length; i++) {
-            files[i].index = i;
             filesToUpload.push(files[i]);
         }
 
         this.setState({filesToUpload: filesToUpload});
+
+        this.childComponents = [];
+        for (let i = 0; i < filesToUpload.length; i++) {
+            this.childComponents[i] = React.createRef();
+        }
     }
 
-    upload() {
-        this.state.filesToUpload.forEach(file => {
-
-            const xhr = new XMLHttpRequest();
-            xhr.upload.addEventListener('progress', progress => {
-                this.setState((state, props) => {
-                    state.filesToUpload[file.index].progress = (progress.loaded / (progress.total / 100)).toFixed(2)
-    
-                    return {filesToUpload: state.filesToUpload};
-                });
-            }, false)
-
-            xhr.upload.addEventListener('error', error => {
-                console.error(error);
-            });
-
-            const formData = new FormData();
-            formData.append('file', file);
-            xhr.open('POST', 'upload');
-            xhr.send(formData);
-        });
+    click() {
+        this.childComponents.forEach(childComponent => {
+            childComponent.current.upload();
+        })
     }
 
     render() {
-        const files = this.state.filesToUpload.map(file => <li key={file.name}><FileData file={file}/></li>);
+        const files = this.state.filesToUpload.map((file, idx) => <li key={file.name}><FileData ref={this.childComponents[idx]} file={file}/></li>);
 
         return (
             <div>
                 <form>
                     <input type="file" multiple id="filesToUpload" name="filesToUpload" onChange={this.onFilesChange}/>
-                    <input type="button" value="Click" onClick={this.upload}/>
+                    <input type="button" value="Click" onClick={this.click}/>
                 </form>
 
                 <ul>
